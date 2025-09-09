@@ -1,0 +1,17 @@
+<div class="profile-container" *ngIf="!loading && currentUser; else loadingOrError">
+  <h2>👤 Mon Profil</h2>
+
+  <div class="profile-card">
+    <p><strong>Nom :</strong> {{ currentUser.nom }}</p>
+    <p><strong>Prénom :</strong> {{ currentUser.prenom }}</p>
+    <p><strong>Email :</strong> {{ currentUser.email }}</p>
+    <p><strong>Rôle :</strong> {{ currentUser.role || 'Utilisateur' }}</p>
+  </div>
+</div>
+
+<ng-template #loadingOrError>
+  <div *ngIf="loading">Chargement du profil...</div>
+  <div *ngIf="!loading && errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+</ng-template>

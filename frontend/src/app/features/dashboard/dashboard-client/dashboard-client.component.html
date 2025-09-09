@@ -1,0 +1,37 @@
+<app-header-client></app-header-client>
+
+<div class="dashboard">
+  <h2>Hello, {{ displayName }}</h2>
+
+  <div *ngIf="errorMessage" class="alert alert-error">{{ errorMessage }}</div>
+
+  <div class="dashboard" *ngIf="currentUser">
+    <div *ngIf="projects.length === 0 && !loadingProjects" class="no-projects">
+      <p>No project assigned to you.</p>
+    </div>
+
+    <div class="projects" *ngFor="let project of projects">
+      <h3>{{ project.name }}</h3>
+      <p>{{ project.description }}</p>
+      <p><strong>Assigned to:</strong> 
+        <span *ngFor="let userId of project.assignedTo; let last=last">
+          {{ getUserName(userId) }}<span *ngIf="!last">, </span>
+        </span>
+      </p>
+
+      <!-- Message if all tasks are completed -->
+      <div class="project-completed-message" *ngIf="isProjectCompleted(project)">
+        ✅ All tasks for this project are completed.
+      </div>
+
+      <ul>
+        <li *ngFor="let task of project.tasks">
+          <input type="checkbox" [checked]="task.done" 
+                 [disabled]="task.done" 
+                 (change)="toggleTask(task)" />
+          <span [class.completed]="task.done">{{ task.title }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
