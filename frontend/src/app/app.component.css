@@ -1,0 +1,74 @@
+/* Conteneur principal */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Hauteur minimale de la fenêtre */
+  margin: 0; /* Supprime les marges par défaut */
+  padding: 0; /* Supprime les paddings par défaut */
+}
+
+/* Contenu principal via router-outlet */
+:host /deep/ router-outlet + * {
+  flex: 1 0 auto; /* S'étend pour pousser le footer en bas */
+}
+
+/* Footer */
+.footer {
+  background-color: #111827;
+  color: white;
+  text-align: center;
+  padding: 20px 0;
+  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0; /* Empêche le footer de rétrécir */
+  width: 100%; /* Assure une largeur pleine */
+}
+
+/* Paragraphe dans le footer */
+.footer p {
+  margin: 0 0 10px 0;
+  font-size: 0.9rem;
+}
+
+/* Icônes sociales */
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.social-icons .icon {
+  color: #fbbf24;
+  font-size: 1.5rem;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.social-icons .icon:hover {
+  transform: scale(1.2);
+}
+
+/* Media Queries pour responsive design */
+@media (max-width: 768px) {
+  .footer {
+    padding: 15px 0;
+  }
+
+  .footer p {
+    font-size: 0.8rem;
+  }
+
+  .social-icons .icon {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .social-icons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .social-icons .icon {
+    font-size: 1rem;
+  }
+}

@@ -1,0 +1,27 @@
+.projects-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+}
+
+.projects-container h2 {
+  margin-bottom: 15px;
+  color: #1f2937;
+}
+
+.project-list {
+  list-style: none;
+  padding: 0;
+}
+
+.project-list li {
+  background-color: #e5e7eb;
+  margin-bottom: 10px;
+  padding: 12px 15px;
+  border-radius: 5px;
+  transition: transform 0.2s;
+}
+
+.project-list li:hover {
+  transform: scale(1.02);
+}

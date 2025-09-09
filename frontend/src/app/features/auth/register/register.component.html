@@ -1,0 +1,44 @@
+<app-header></app-header>
+<div class="register-container">
+  <div class="register-card">
+    <h2 class="register-title">Créer un compte</h2>
+    <p class="register-subtitle">Inscrivez-vous pour commencer</p>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+    <form (ngSubmit)="register()" #registerForm="ngForm">
+      <div class="form-group">
+        <label for="register-nom">Nom</label>
+        <input type="text" id="register-nom" name="nom" [(ngModel)]="nom" placeholder="Votre nom" required>
+      </div>
+
+      <div class="form-group">
+        <label for="register-prenom">Prénom</label>
+        <input type="text" id="register-prenom" name="prenom" [(ngModel)]="prenom" placeholder="Votre prénom" required>
+      </div>
+
+      <div class="form-group">
+        <label for="register-email">Email</label>
+        <input type="email" id="register-email" name="email" [(ngModel)]="email" placeholder="Votre email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="register-password">Mot de passe</label>
+        <input type="password" id="register-password" name="password" [(ngModel)]="password" placeholder="Votre mot de passe" required>
+      </div>
+
+      <div class="form-group">
+        <label for="register-confirm">Confirmer le mot de passe</label>
+        <input type="password" id="register-confirm" name="confirmPassword" [(ngModel)]="confirmPassword" placeholder="Confirmez le mot de passe" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Créer le compte</button>
+    </form>
+
+    <p class="text-center mt-2">
+      Vous avez déjà un compte ? 
+      <a routerLink="/login" class="login-link">Se connecter</a>
+    </p>
+  </div>
+</div>

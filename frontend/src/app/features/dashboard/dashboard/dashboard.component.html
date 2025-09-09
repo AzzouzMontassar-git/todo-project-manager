@@ -1,0 +1,171 @@
+<app-header-user></app-header-user>
+
+<div class="dashboard-container">
+  <h2>Dashboard</h2>
+
+  <!-- Project creation form (admin) -->
+  <form (ngSubmit)="addProject()" *ngIf="currentUser.role === 'admin'">
+    <div class="project-form">
+      <h3>Create a new project</h3>
+      
+      <div class="form-group">
+        <input 
+          [(ngModel)]="newProjectTitle" 
+          placeholder="Project title" 
+          [class.error]="newProjectTitleError" 
+          (blur)="validateForm()" 
+          class="form-input"
+          name="title"
+          required
+        />
+        <div *ngIf="newProjectTitleError" class="field-error">Project title is required</div>
+      </div>
+
+      <div class="form-group">
+        <textarea 
+          [(ngModel)]="newProjectDescription" 
+          placeholder="Project description" 
+          [class.error]="newProjectDescriptionError" 
+          (blur)="validateForm()"
+          class="form-input"
+          rows="3"
+          name="description"
+          required
+        ></textarea>
+        <div *ngIf="newProjectDescriptionError" class="field-error">Description is required</div>
+      </div>
+
+      <!-- User search field -->
+      <div class="form-group user-search-group" style="position:relative;">
+        <input
+          #userSearchInput
+          type="text"
+          [ngModel]="userSearchTerm"
+          (input)="onUserSearchInput($event)"
+          name="userSearch"
+          placeholder="Type email, last name or first name"
+          autocomplete="off"
+          required
+          class="form-input user-search-input"
+          [class.has-suggestions]="showUserSuggestions"
+        />
+        <!-- Suggestions -->
+        <ul *ngIf="showUserSuggestions" class="user-suggestions-list">
+          <li 
+            *ngFor="let user of filteredUsers; trackBy: trackByUserId"
+            (click)="selectUser(user)"
+            class="user-suggestion-item"
+            tabindex="0"
+            (keydown.enter)="selectUser(user)"
+          >
+            <span class="user-avatar">{{ user.nom[0] | uppercase }}{{ user.prenom[0] | uppercase }}</span>
+            <span class="user-info">
+              <span class="user-name">{{ user.nom }} {{ user.prenom }}</span>
+              <span class="user-email">{{ user.email }}</span>
+            </span>
+          </li>
+        </ul>
+        <div *ngIf="userSearchTerm && !assignedUserId && !showUserSuggestions" class="field-error">
+          No user found with this input.
+        </div>
+        <div *ngIf="assignedUserId" class="user-selected">
+          ✅ Assigned user: <strong>{{ assignedUser?.nom }} {{ assignedUser?.prenom }}</strong> ({{ assignedUser?.email }})
+        </div>
+      </div>
+
+      <button 
+        type="submit" 
+        [disabled]="!isFormValid()" 
+        class="btn btn-primary"
+        [class.disabled]="!isFormValid()"
+      >
+        Create project
+      </button>
+
+      <div class="error-message" *ngIf="hasFormErrors">
+        Please fix the errors above
+      </div>
+    </div>
+  </form>
+
+  <!-- Project list -->
+  <div class="project-list">
+    <h3 *ngIf="projects.length > 0">
+      {{ currentUser.role === 'admin' ? 'All projects' : 'My projects' }}
+      ({{ visibleProjects.length }})
+    </h3>
+    
+    <div *ngIf="visibleProjects.length === 0" class="no-projects">
+      <p>{{ currentUser.role === 'admin' ? 'No project created.' : 'No project assigned.' }}</p>
+    </div>
+
+    <div *ngFor="let project of visibleProjects; trackBy: trackByProjectId" class="project-card">
+      <div class="project-header">
+        <h4>{{ project.title }}</h4>
+        <button 
+          *ngIf="currentUser.role === 'admin'" 
+          (click)="removeProject(project)" 
+          class="btn btn-danger btn-sm"
+          title="Delete project"
+        >
+          ✕
+        </button>
+      </div>
+      
+      <p class="project-description">{{ project.description }}</p>
+      
+      <p *ngIf="currentUser.role === 'admin'" class="assigned-users">
+        <strong>Assigned to:</strong> {{ getAssignedUserNames(project) }}
+      </p>
+
+      <!-- Add task form -->
+      <div class="task-form">
+        <input 
+          #taskInput 
+          placeholder="New task..." 
+          class="task-input"
+          (keypress)="onTaskInputKeyPress($event, project, taskInput)"
+        />
+        <button 
+          (click)="addTask(project, taskInput.value); taskInput.value = ''" 
+          class="btn btn-secondary btn-sm"
+          [disabled]="!taskInput.value?.trim()"
+        >
+          Add
+        </button>
+      </div>
+
+      <!-- Task list -->
+      <ul class="task-list" *ngIf="project.tasks && project.tasks.length > 0">
+        <li *ngFor="let task of project.tasks; trackBy: trackByTaskId" class="task-item">
+          <div class="task-content">
+            <input 
+              type="checkbox" 
+              [checked]="task.done" 
+              (change)="toggleTask(task, project)"
+              class="task-checkbox"
+            />
+            <span 
+              [class.completed]="task.done"
+              class="task-title"
+            >
+              {{ task.title }}
+            </span>
+          </div>
+          <button 
+            *ngIf="currentUser.role === 'admin'" 
+            (click)="removeTask(project, task)" 
+            class="btn btn-danger btn-xs"
+            title="Delete task"
+          >
+            ✕
+          </button>
+        </li>
+      </ul>
+
+      <div *ngIf="!project.tasks || project.tasks.length === 0" class="no-tasks">
+        No tasks for this project
+      </div>
+    </div>
+  </div>
+</div>
